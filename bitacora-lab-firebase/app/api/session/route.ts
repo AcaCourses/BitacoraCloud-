@@ -43,7 +43,7 @@ export async function POST(req: Request) {
         matricula: parsed.matricula,
         createdAt: new Date().toISOString(),
         phaseIndex: 0,
-        currentStepId: 'intro-step-1', // Initial stub step
+        currentStepId: 'phase_0_actions',
         guideRound: 0,
         pendingIdeas: [],
         entries: [],
