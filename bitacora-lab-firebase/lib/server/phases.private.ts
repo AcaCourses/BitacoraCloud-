@@ -31,7 +31,7 @@ export const PHASES: PhaseDefinition[] = [
       ],
       correct: "Firebase absorberá el incremento de tráfico de forma transparente, reflejándose únicamente en el consumo facturado."
     },
-    closingPrompt: "¿Qué concepto te pareció más revelador de este módulo?"
+    closingPrompt: "¡Excelente! Has comprendido por qué Pet Theory abandonó los servidores físicos. En el **Módulo 2**, implementarás la autenticación. Descubrirás por qué es vital autorizar el dominio de tu aplicación web para que los clientes puedan acceder de forma segura usando sus cuentas de Google, sin que la clínica tenga que gestionar contraseñas."
   },
   {
     phase: 1,
@@ -63,7 +63,7 @@ export const PHASES: PhaseDefinition[] = [
       ],
       correct: "El proveedor de identidad rechaza la solicitud de autenticación y muestra un error de origen no autorizado."
     },
-    closingPrompt: "Anota un apunte rápido sobre Autenticación vs Autorización."
+    closingPrompt: "¡Bien hecho! Ahora que los usuarios pueden acceder, en el **Módulo 3** asegurarás los datos. Reemplazarás las reglas de prueba de Firestore por reglas estrictas que garanticen que cada cliente solo pueda leer y escribir su propia información personal, bloqueando cualquier acceso malicioso."
   },
   {
     phase: 2,
@@ -95,7 +95,7 @@ export const PHASES: PhaseDefinition[] = [
       ],
       correct: "La consulta es denegada inmediatamente por el motor de reglas de Firestore sin devolver ningún dato."
     },
-    closingPrompt: "¿Por qué es importante establecer reglas de base de datos restrictivas desde el inicio?"
+    closingPrompt: "¡Genial! Tu base de datos ya está blindada. En el **Módulo 4**, prepararás tu entorno local. Aprenderás a usar la línea de comandos (Firebase CLI) desde Cloud Shell para inicializar y desplegar el código del frontend directamente hacia Firebase Hosting."
   },
   {
     phase: 3,
@@ -127,7 +127,7 @@ export const PHASES: PhaseDefinition[] = [
       ],
       correct: "La CLI no sabrá a cuál de los sitios de Hosting del proyecto enviar los archivos estáticos o fallará por destino ambiguo."
     },
-    closingPrompt: "¿Qué comandos usaste para inicializar y desplegar la aplicación?"
+    closingPrompt: "¡Despliegue exitoso! En el **Módulo 5**, harás que la aplicación cobre vida. Modificarás el código para que escuche cambios en tiempo real usando onSnapshot. Verás la verdadera magia de Firestore: las pantallas de los usuarios se actualizarán solas sin necesidad de recargar la página."
   },
   {
     phase: 4,
@@ -159,7 +159,7 @@ export const PHASES: PhaseDefinition[] = [
       ],
       correct: "El listener onSnapshot en el teléfono recibe la mutación y actualiza el campo en tiempo real."
     },
-    closingPrompt: "¿Qué impacto tiene onSnapshot en las apps web modernas?"
+    closingPrompt: "¡Impresionante! Has construido una aplicación verdaderamente reactiva. En el **Módulo 6** final, te pondrás el sombrero de arquitecto. Hablarás directamente con Lily, la dueña de la clínica, para explicarle con palabras sencillas cómo toda esta tecnología aporta valor real y seguridad a su negocio."
   },
   {
     phase: 5,
@@ -189,6 +189,6 @@ export const PHASES: PhaseDefinition[] = [
       ],
       correct: "Implementar la función para programar citas, ahora que la identidad y base de datos son sólidas"
     },
-    closingPrompt: "¡Felicidades por completar la bitácora!"
+    closingPrompt: "¡Felicidades! Has completado todos los módulos técnicos. Ahora estás listo para generar tu reporte final de desempeño."
   }
 ];

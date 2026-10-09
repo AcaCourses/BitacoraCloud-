@@ -14,6 +14,7 @@ function CierreContent() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [stepData, setStepData] = useState<any>(null);
+  const [phaseIndex, setPhaseIndex] = useState(0);
   const [resumeCode, setResumeCode] = useState<string>("");
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState("");
@@ -35,6 +36,7 @@ function CierreContent() {
         return;
       }
       setStepData(data.currentStep);
+      setPhaseIndex(data.phaseIndex);
       setResumeCode(data.resumeCode);
     } catch (err) {
       setError("Error cargando el estado");
@@ -105,11 +107,23 @@ function CierreContent() {
   return (
     <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16">
       <header className="border-b border-neutral-200 dark:border-neutral-800 pb-6 flex justify-between items-start">
-        <div>
-          <div className="flex items-center gap-3 mb-2 text-emerald-600 dark:text-emerald-500">
-            <CheckCircle2 className="w-6 h-6" />
-            <span className="font-medium tracking-wide text-sm uppercase">Fase {stepData.phase ? 'Activa' : ''}</span>
+        <div className="flex-1 max-w-xl">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3 text-emerald-600 dark:text-emerald-500">
+              <CheckCircle2 className="w-6 h-6" />
+              <span className="font-medium tracking-wide text-sm uppercase">
+                {stepData.type === 'close' ? 'Módulo Completado' : `Fase Activa`}
+              </span>
+            </div>
+            <div className="text-sm font-medium text-neutral-500">
+              Módulo {phaseIndex + 1} de 6
+            </div>
           </div>
+          
+          <div className="w-full bg-neutral-200 dark:bg-neutral-800 rounded-full h-2 mb-6">
+            <div className="bg-emerald-500 h-2 rounded-full transition-all duration-500" style={{ width: `${((phaseIndex + 1) / 6) * 100}%` }}></div>
+          </div>
+
           <h1 className="text-2xl md:text-3xl font-medium tracking-tight">{stepData.phase || 'Laboratorio'}</h1>
         </div>
         {resumeCode && (
@@ -162,13 +176,36 @@ function CierreContent() {
               </button>
             </div>
           </div>
+        ) : stepData.type === 'close' ? (
+          <div className="space-y-6 text-neutral-800 dark:text-neutral-200">
+            <h2 className="text-xl font-medium text-emerald-600 dark:text-emerald-500">Descanso: Fin del Módulo</h2>
+            
+            <div className="bg-emerald-50 dark:bg-emerald-900/20 p-6 rounded-lg border border-emerald-200 dark:border-emerald-800/50">
+              <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed text-lg">
+                {stepData.prompt}
+              </p>
+            </div>
+
+            <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800 mt-6 space-y-4">
+              <p className="text-sm text-neutral-500">¿Listo para continuar? Tu progreso está guardado automáticamente. Si necesitas un descanso más largo, puedes cerrar esta pestaña y retomar tu avance con tu código de recuperación más tarde.</p>
+              
+              <button
+                type="button"
+                onClick={() => handleSubmit(undefined, 'Continuar')}
+                disabled={submitting}
+                className="w-full inline-flex justify-center items-center gap-2 py-3 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
+              >
+                {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Continuar al siguiente módulo"}
+              </button>
+            </div>
+          </div>
         ) : (
           <>
             <h2 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-4">
               {stepData.prompt}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
-          {stepData.type === 'free' || stepData.type === 'guide-free' || stepData.type === 'close' ? (
+          {stepData.type === 'free' || stepData.type === 'guide-free' ? (
             <div className="space-y-2">
               <textarea
                 value={answer}
