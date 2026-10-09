@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter);
+}
+
+@layer base {
+  *, ::before, ::after {
+    border-color: var(--color-neutral-200);
+  }
+}
