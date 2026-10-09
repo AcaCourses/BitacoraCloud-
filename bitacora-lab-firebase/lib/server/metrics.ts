@@ -2,27 +2,22 @@ import { SessionRecord } from '../types';
 import { PHASES } from './phases.private';
 
 export interface FinalMetrics {
-  autonomyRate: number;
-  resolutionRate: number;
-  calibrationCorrel: number; // Placeholder for actual math
+  totalIdeas: number;
+  coveredV1: number;
+  coveredGuide: number;
+  misunderstood: number;
+  totalPredicts: number;
+  correctPredicts: number;
   flags: string[];
   summary: string;
+  conceptsToReview: string[];
 }
 
 export function generateFinalReport(session: SessionRecord): FinalMetrics {
-  let totalIdeas = 0;
-  let coveredV1 = 0;
-  let coveredGuide = 0;
-  let misunderstood = 0;
-  
-  let totalPredicts = 0;
-  let correctPredicts = 0;
-  
-  let fastV1Count = 0;
-  let highPastingCount = 0;
-  let copiedLabFlag = false;
-
-  const autonomyPerPhase: number[] = [];
+  let totalIdeas = 0, coveredV1 = 0, coveredGuide = 0, misunderstood = 0;
+  let totalPredicts = 0, correctPredicts = 0;
+  let fastV1Count = 0, copiedLabFlag = false;
+  const conceptsToReview: string[] = [];
 
   session.entries.forEach((entry, i) => {
     const phaseDef = PHASES[i];
@@ -31,28 +26,22 @@ export function generateFinalReport(session: SessionRecord): FinalMetrics {
     let phaseIdeas = Object.keys(phaseDef.guides).length;
     totalIdeas += phaseIdeas;
 
-    let phaseCoveredV1 = 0;
-    
-    Object.values(entry.ideas).forEach(status => {
-      if (status === 'cubierta_v1') {
-        coveredV1++;
-        phaseCoveredV1++;
+    Object.entries(entry.ideas).forEach(([ideaId, status]) => {
+      if (status === 'cubierta_v1') coveredV1++;
+      if (status === 'cubierta_con_guia') {
+        coveredGuide++;
+        conceptsToReview.push(phaseDef.ideas.find(x => x.id === ideaId)?.desc || ideaId);
       }
-      if (status === 'cubierta_con_guia') coveredGuide++;
-      if (status === 'malentendido') misunderstood++;
+      if (status === 'malentendido' || status === 'sin_resolver') {
+        misunderstood++;
+        conceptsToReview.push("URGENTE: " + (phaseDef.ideas.find(x => x.id === ideaId)?.desc || ideaId));
+      }
     });
 
-    autonomyPerPhase.push(phaseIdeas > 0 ? phaseCoveredV1 / phaseIdeas : 1);
-
-    if (entry.notes.includes('FLAG:copiedFromLab')) {
-      copiedLabFlag = true;
-    }
+    if (entry.notes.includes('FLAG:copiedFromLab')) copiedLabFlag = true;
 
     const v1Step = entry.steps.find(s => s.stepId.includes('v1Prompt'));
-    if (v1Step) {
-      if (v1Step.meta.msOnStep < 40000) fastV1Count++;
-      if (v1Step.meta.pastedText) highPastingCount++;
-    }
+    if (v1Step && v1Step.meta?.msOnStep < 40000) fastV1Count++;
 
     const predStep = entry.steps.find(s => s.type === 'predict');
     if (predStep) {
@@ -61,31 +50,16 @@ export function generateFinalReport(session: SessionRecord): FinalMetrics {
     }
   });
 
-  const autonomyRate = totalIdeas > 0 ? coveredV1 / totalIdeas : 0;
-  const resolutionRate = totalIdeas > 0 ? (coveredV1 + coveredGuide) / totalIdeas : 0;
-
   const flags: string[] = [];
-  if (copiedLabFlag || highPastingCount > 2) flags.push("Copia de lab detectada");
-  if (misunderstood > 0) flags.push("Malentendidos firmes detectados");
-  
-  const dependentPhases = autonomyPerPhase.filter(r => r < 0.25).length;
-  if (dependentPhases >= 5) flags.push("Dependiente de guías");
-  
+  if (copiedLabFlag) flags.push("Copia de lab detectada");
   if (fastV1Count > 3) flags.push("Ritmo apresurado (<40s en reflexión)");
 
-  const resolutionP = (resolutionRate * 100).toFixed(0);
-  const autonomyP = (autonomyRate * 100).toFixed(0);
-
-  const summary = `El estudiante completó el laboratorio con un nivel de resolución del ${resolutionP}% y una autonomía inicial del ${autonomyP}%. ` +
-    (flags.length > 0 ? `Banderas detectadas: ${flags.join(', ')}. ` : 'Sin banderas de alerta. ') +
-    `Se recomienda repasar los conceptos fundamentales de Firestore y promesas en Node.js, donde se requirió mayor guía. ` +
-    `Destaca por su precisión en las predicciones futuras (${correctPredicts}/${totalPredicts}).`;
+  const summary = `El estudiante demostró dominio directo en ${coveredV1} de ${totalIdeas} conceptos clave. ` +
+    `Requirió asistencia guiada en ${coveredGuide} conceptos, y no logró resolver ${misunderstood} escenarios. ` +
+    `Su capacidad para predecir el impacto de la arquitectura fue de ${correctPredicts} aciertos sobre ${totalPredicts}.`;
 
   return {
-    autonomyRate,
-    resolutionRate,
-    calibrationCorrel: 0.8, // Dummy correlation
-    flags,
-    summary
+    totalIdeas, coveredV1, coveredGuide, misunderstood,
+    totalPredicts, correctPredicts, flags, summary, conceptsToReview
   };
 }

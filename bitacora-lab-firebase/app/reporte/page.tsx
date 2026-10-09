@@ -37,8 +37,6 @@ function ReporteContent() {
 
   const { payload, sig } = report;
   const metrics = payload.metrics;
-  const resolutionP = (metrics.resolutionRate * 100).toFixed(0);
-  const autonomyP = (metrics.autonomyRate * 100).toFixed(0);
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-700 pb-24">
@@ -65,12 +63,12 @@ function ReporteContent() {
 
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="p-5 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl">
-          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Resolución</p>
-          <p className="text-3xl font-light">{resolutionP}%</p>
+          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Conceptos Dominados</p>
+          <p className="text-3xl font-light text-emerald-600 dark:text-emerald-500">{metrics.coveredV1} <span className="text-sm text-neutral-400">/ {metrics.totalIdeas}</span></p>
         </div>
         <div className="p-5 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl">
-          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Autonomía</p>
-          <p className="text-3xl font-light">{autonomyP}%</p>
+          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Predicciones Correctas</p>
+          <p className="text-3xl font-light text-blue-600 dark:text-blue-500">{metrics.correctPredicts} <span className="text-sm text-neutral-400">/ {metrics.totalPredicts}</span></p>
         </div>
         <div className="p-5 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl col-span-2 md:col-span-2 flex flex-col justify-center">
           <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">Banderas de Diagnóstico</p>
@@ -91,10 +89,52 @@ function ReporteContent() {
       </section>
 
       <section className="p-6 md:p-8 bg-neutral-50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-xl">
-        <h2 className="text-lg font-medium mb-4">Síntesis Formativa</h2>
-        <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed max-w-4xl">
+        <h2 className="text-lg font-medium mb-4 text-neutral-900 dark:text-neutral-100">Análisis Formal de Desempeño</h2>
+        <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed max-w-4xl mb-6">
           {metrics.summary}
         </p>
+        {metrics.conceptsToReview && metrics.conceptsToReview.length > 0 && (
+          <div>
+            <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-3 uppercase tracking-wider">Conceptos a Repasar</h3>
+            <ul className="space-y-2">
+              {metrics.conceptsToReview.map((concept: string, idx: number) => (
+                <li key={idx} className="flex gap-3 text-neutral-700 dark:text-neutral-300 text-sm">
+                  <span className="text-amber-500 font-bold">•</span>
+                  <span>{concept}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </section>
+
+      <section className="space-y-6">
+        <h2 className="text-2xl font-medium tracking-tight mb-6">Recapitulación de Respuestas</h2>
+        {payload.entries?.map((entry: any, i: number) => (
+          <div key={i} className="border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-white dark:bg-neutral-900">
+            <div className="bg-neutral-100 dark:bg-neutral-950 px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+              <h3 className="font-medium text-neutral-900 dark:text-neutral-100">{entry.title}</h3>
+            </div>
+            <div className="divide-y divide-neutral-100 dark:divide-neutral-800/50">
+              {entry.steps.map((step: any, j: number) => {
+                if (step.type === 'intro' || step.type === 'actions') return null;
+                return (
+                  <div key={j} className="p-6 space-y-3">
+                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-200">{step.prompt}</p>
+                    <div className="bg-neutral-50 dark:bg-neutral-950 p-4 rounded-lg font-mono text-sm border-l-2 border-emerald-500 text-neutral-700 dark:text-neutral-400 whitespace-pre-wrap">
+                      {step.answer}
+                    </div>
+                    {step.correct !== undefined && (
+                      <div className={`text-xs font-medium ${step.correct ? 'text-emerald-600' : 'text-red-500'}`}>
+                        {step.correct ? '✓ Opción Correcta' : '✗ Opción Incorrecta'}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </section>
 
       <footer className="pt-12 mt-12 border-t border-neutral-200 dark:border-neutral-800 text-center space-y-3 print:mt-auto print:border-none">

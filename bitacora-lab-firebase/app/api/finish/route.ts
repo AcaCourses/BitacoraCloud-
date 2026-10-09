@@ -28,6 +28,7 @@ export async function POST(req: Request) {
         sessionId: session.id,
         student: { nombre: session.nombre, matricula: session.matricula },
         metrics,
+        entries: session.entries,
         timestamp: new Date().toISOString()
       };
 
