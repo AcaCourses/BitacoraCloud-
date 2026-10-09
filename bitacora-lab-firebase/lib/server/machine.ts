@@ -40,7 +40,8 @@ export function closeStep(session: SessionRecord, data: { stepId: string; answer
       type: 'free',
       at: new Date().toISOString(),
       prompt: 'Instrucciones leídas',
-      answer: 'Sí'
+      answer: 'Sí',
+      meta: data.meta
     };
   }
 
