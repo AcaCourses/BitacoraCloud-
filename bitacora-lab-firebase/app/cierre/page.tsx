@@ -134,20 +134,45 @@ function CierreContent() {
         )}
       </header>
 
-      <section className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-6 md:p-8 rounded-xl shadow-sm">
+      <section key={stepData.id || stepData.prompt} className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-6 md:p-8 rounded-xl shadow-sm animate-in fade-in slide-in-from-right-4 duration-500">
         {stepData.type === 'intro' ? (
           <div className="space-y-6 text-neutral-800 dark:text-neutral-200">
             <h2 className="text-xl font-medium text-blue-600 dark:text-blue-400">Instrucciones Previas</h2>
-            <p className="text-lg mb-4">
-              Antes de comenzar a responder las preguntas, debes realizar el laboratorio <strong>GSP643</strong> paso a paso en tu cuenta de Google Cloud Skills Boost.
+            <p className="text-lg mb-4 text-neutral-700 dark:text-neutral-300">
+              Esta bitácora interactiva evaluará tu comprensión profunda del laboratorio. <strong>¡No respondas a lo loco!</strong> Te recomendamos encarecidamente realizar el laboratorio <strong>dos veces</strong> antes de comenzar: una vez para seguir la guía paso a paso, y otra para detenerte a entender realmente qué está pasando.
             </p>
-            <div className="bg-neutral-50 dark:bg-neutral-800/50 p-6 rounded-lg border border-neutral-200 dark:border-neutral-700 space-y-4">
-              <h3 className="font-medium text-lg border-b border-neutral-200 dark:border-neutral-700 pb-2">Reglas para tu Bitácora</h3>
-              <ul className="list-disc pl-5 space-y-3 text-neutral-700 dark:text-neutral-300">
-                <li><strong>Escribe lo que entiendas con tus propias palabras:</strong> Lo más importante es tu proceso de reflexión, no que uses lenguaje ultra técnico.</li>
-                <li><strong>No copies y pegues resúmenes de IA:</strong> Puedes investigar en internet o usar ChatGPT/Gemini para entender un concepto si te trabas, pero <em>no queremos ver respuestas 100% generadas por IA</em>. Redacta la respuesta basándote en tu propia comprensión de lo que hiciste.</li>
-                <li><strong>Si te quedas en blanco, vuelve al laboratorio:</strong> Si una pregunta te parece muy confusa o sientes que no tienes idea, tómate un momento, abre el laboratorio y vuelve a leer esa sección específica.</li>
-              </ul>
+            <div className="bg-neutral-50 dark:bg-neutral-800/50 p-6 rounded-lg border border-neutral-200 dark:border-neutral-700 space-y-6">
+              <div>
+                <h3 className="font-medium text-lg border-b border-neutral-200 dark:border-neutral-700 pb-2 mb-3">Reglas para tu Bitácora</h3>
+                <ul className="list-disc pl-5 space-y-3 text-neutral-700 dark:text-neutral-300">
+                  <li><strong>Tómate un momento para responder:</strong> Lee cuidadosamente la pregunta y el escenario. Verifica tu respuesta comparándola con lo que realmente sucedió cuando ejecutaste el laboratorio.</li>
+                  <li><strong>Escribe lo que entiendas con tus propias palabras:</strong> Lo más importante es tu proceso de reflexión, no usar lenguaje ultra técnico.</li>
+                  <li><strong>No copies y pegues resúmenes de IA:</strong> Puedes usar IA para estudiar conceptos, pero <em>no queremos ver respuestas 100% generadas por IA</em>. Redacta basándote en tu propia comprensión.</li>
+                  <li><strong>Si te quedas en blanco, vuelve al laboratorio:</strong> Tómate un momento, abre la consola de Google Cloud y vuelve a revisar esa sección específica.</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-medium text-lg border-b border-neutral-200 dark:border-neutral-700 pb-2 mb-3">¿Qué evaluaremos por módulo?</h3>
+                <ul className="list-disc pl-5 space-y-2 text-neutral-700 dark:text-neutral-300 text-sm">
+                  <li><strong>Módulo 1:</strong> Entender el esquema de cobro y gestión de la infraestructura Serverless.</li>
+                  <li><strong>Módulo 2:</strong> Diferenciar Autenticación vs Autorización y protección de dominios.</li>
+                  <li><strong>Módulo 3:</strong> Comprender el aislamiento de datos con Reglas de Firestore declarativas.</li>
+                  <li><strong>Módulo 4:</strong> Interpretar la configuración de Firebase CLI y despliegue local.</li>
+                  <li><strong>Módulo 5:</strong> Analizar el impacto de la sincronización en tiempo real (onSnapshot).</li>
+                  <li><strong>Módulo 6:</strong> Sintetizar el valor de seguridad y disponibilidad para el negocio.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg flex items-start gap-3 mt-6">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-500 shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-emerald-800 dark:text-emerald-400 mb-1">Entregable Final (SEA)</h3>
+                <p className="text-sm text-emerald-700 dark:text-emerald-500">
+                  Al finalizar todos los módulos, el sistema generará un <strong>Reporte Final Firmado</strong>. Ese archivo exportado es tu evidencia oficial y es exactamente lo que deberás subir a la plataforma SEA.
+                </p>
+              </div>
             </div>
             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
               <a href="https://www.skills.google/focuses/8391?catalog_rank=%7B%22rank%22%3A3%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=102386936" target="_blank" rel="noreferrer" className="text-blue-700 dark:text-blue-400 font-medium hover:underline flex items-center gap-2">
