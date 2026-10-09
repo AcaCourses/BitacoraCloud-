@@ -57,7 +57,8 @@ export function closeStep(session: SessionRecord, data: { stepId: string; answer
     type = 'free';
     prompt = phaseDef.v1Prompt;
   } else if (data.stepId.includes('guide')) {
-    const ideaId = data.stepId.split('_')[1];
+    const prefix = `phase_${session.phaseIndex}_guide_`;
+    const ideaId = data.stepId.substring(prefix.length);
     const guide = phaseDef.guides[ideaId];
     prompt = guide?.prompt || '';
     if (guide?.type === 'choice') {
@@ -256,7 +257,8 @@ export function toStepView(session: SessionRecord): StepView | null {
   }
 
   if (session.currentStepId.includes('guide')) {
-    const ideaId = session.currentStepId.split('_').pop()!;
+    const prefix = `phase_${session.phaseIndex}_guide_`;
+    const ideaId = session.currentStepId.substring(prefix.length);
     const guide = phaseDef.guides[ideaId];
     if (guide.type === 'choice') {
       // Check if retry
