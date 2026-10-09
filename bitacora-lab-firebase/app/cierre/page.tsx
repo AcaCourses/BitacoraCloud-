@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 
-export default function CierrePage() {
+import { Suspense } from "react";
+
+function CierreContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams?.get("sessionId") || "";
@@ -154,5 +156,13 @@ export default function CierrePage() {
         </form>
       </section>
     </div>
+  );
+}
+
+export default function CierrePage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center h-64 text-neutral-500"><Loader2 className="w-8 h-8 animate-spin" /></div>}>
+      <CierreContent />
+    </Suspense>
   );
 }

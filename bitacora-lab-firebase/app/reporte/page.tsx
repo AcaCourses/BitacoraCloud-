@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Download, FileJson, Printer, ShieldCheck, AlertTriangle } from "lucide-react";
 
-export default function ReportePage() {
+import { Suspense } from "react";
+
+function ReporteContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams?.get("sessionId");
 
@@ -104,5 +106,13 @@ export default function ReportePage() {
         <p className="text-xs text-neutral-400">Validable en `/verificar`</p>
       </footer>
     </div>
+  );
+}
+
+export default function ReportePage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-neutral-500">Cargando reporte...</div>}>
+      <ReporteContent />
+    </Suspense>
   );
 }

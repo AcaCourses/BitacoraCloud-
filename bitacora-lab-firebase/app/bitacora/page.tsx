@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Book, Clock, Edit3, CheckSquare, Square } from "lucide-react";
 
-export default function BitacoraLecturaPage() {
+import { Suspense } from "react";
+
+function BitacoraContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams?.get("sessionId");
 
@@ -110,5 +112,13 @@ export default function BitacoraLecturaPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function BitacoraLecturaPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-neutral-500">Cargando bitácora...</div>}>
+      <BitacoraContent />
+    </Suspense>
   );
 }
