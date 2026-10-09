@@ -24,8 +24,7 @@ export async function classifyWithGemini(
   studentText: string
 ): Promise<{ ideasStatus: Record<string, 'covered' | 'partial' | 'missed'>; copiedFromLab: boolean }> {
   const apiKey = getNextGeminiKey();
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 6000);
+  const timeoutId = setTimeout(() => {}, 6000);
 
   try {
     if (!apiKey) throw new Error("No API key available");
@@ -41,15 +40,19 @@ Return a JSON object with:
 2. 'copiedFromLab': boolean indicating if it seems directly copy-pasted from generic lab instructions.
 Only return valid JSON.`;
 
-    const response = await ai.models.generateContent({
+    const generatePromise = ai.models.generateContent({
       model,
       contents: prompt,
       config: {
         responseMimeType: "application/json",
       }
-    }, {
-      signal: controller.signal
     });
+
+    const timeoutPromise = new Promise<any>((_, reject) => {
+      setTimeout(() => reject(new Error("Timeout")), 6000);
+    });
+
+    const response = await Promise.race([generatePromise, timeoutPromise]);
 
     clearTimeout(timeoutId);
 

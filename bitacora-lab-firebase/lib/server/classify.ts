@@ -32,8 +32,7 @@ export async function classifyWithFallback(
   studentText: string
 ): Promise<ClassifierResult> {
   const apiKey = getNextGeminiKey();
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 6000);
+  const timeoutId = setTimeout(() => {}, 6000);
 
   const fallback: ClassifierResult = {
     ideasStatus: {},
@@ -54,16 +53,20 @@ export async function classifyWithFallback(
     const model = process.env.CLASSIFIER_MODEL || 'gemini-2.5-flash';
     const prompt = buildClassifierPrompt(ideas, studentText);
 
-    const response = await ai.models.generateContent({
+    const generatePromise = ai.models.generateContent({
       model,
       contents: prompt,
       config: {
         responseMimeType: "application/json",
         temperature: 0,
       }
-    }, {
-      signal: controller.signal
     });
+
+    const timeoutPromise = new Promise<any>((_, reject) => {
+      setTimeout(() => reject(new Error("Timeout")), 6000);
+    });
+
+    const response = await Promise.race([generatePromise, timeoutPromise]);
 
     clearTimeout(timeoutId);
 

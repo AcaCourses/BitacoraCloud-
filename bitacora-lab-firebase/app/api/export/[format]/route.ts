@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/server/store';
 
-export async function GET(req: Request, { params }: { params: { format: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ format: string }> }) {
   const { searchParams } = new URL(req.url);
   const sessionId = searchParams.get('sessionId');
-  // @ts-ignore
-  const format = await params.format; // App Router dynamics
+  const resolvedParams = await params;
+  const format = resolvedParams.format;
 
   if (!sessionId) {
     return NextResponse.json({ error: 'sessionId requerido' }, { status: 400 });
