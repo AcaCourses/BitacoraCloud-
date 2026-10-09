@@ -124,9 +124,17 @@ function CierreContent() {
         {stepData.type === 'intro' ? (
           <div className="space-y-6 text-neutral-800 dark:text-neutral-200">
             <h2 className="text-xl font-medium text-blue-600 dark:text-blue-400">Instrucciones Previas</h2>
-            <p>
+            <p className="text-lg mb-4">
               Antes de comenzar a responder las preguntas, debes realizar el laboratorio <strong>GSP643</strong> paso a paso en tu cuenta de Google Cloud Skills Boost.
             </p>
+            <div className="bg-neutral-50 dark:bg-neutral-800/50 p-6 rounded-lg border border-neutral-200 dark:border-neutral-700 space-y-4">
+              <h3 className="font-medium text-lg border-b border-neutral-200 dark:border-neutral-700 pb-2">Reglas para tu Bitácora</h3>
+              <ul className="list-disc pl-5 space-y-3 text-neutral-700 dark:text-neutral-300">
+                <li><strong>Escribe lo que entiendas con tus propias palabras:</strong> Lo más importante es tu proceso de reflexión, no que uses lenguaje ultra técnico.</li>
+                <li><strong>No copies y pegues resúmenes de IA:</strong> Puedes investigar en internet o usar ChatGPT/Gemini para entender un concepto si te trabas, pero <em>no queremos ver respuestas 100% generadas por IA</em>. Redacta la respuesta basándote en tu propia comprensión de lo que hiciste.</li>
+                <li><strong>Si te quedas en blanco, vuelve al laboratorio:</strong> Si una pregunta te parece muy confusa o sientes que no tienes idea, tómate un momento, abre el laboratorio y vuelve a leer esa sección específica.</li>
+              </ul>
+            </div>
             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
               <a href="https://www.skills.google/focuses/8391?catalog_rank=%7B%22rank%22%3A3%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=102386936" target="_blank" rel="noreferrer" className="text-blue-700 dark:text-blue-400 font-medium hover:underline flex items-center gap-2">
                 Abrir Laboratorio GSP643 en Google Skills Boost &rarr;
