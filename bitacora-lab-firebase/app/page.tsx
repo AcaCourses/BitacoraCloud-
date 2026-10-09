@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { BookOpen, Loader2 } from "lucide-react";
 
@@ -12,6 +12,15 @@ export default function Home() {
   const [codigo, setCodigo] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [savedCode, setSavedCode] = useState("");
+
+  useEffect(() => {
+    const saved = localStorage.getItem('bitacora_resume_code');
+    if (saved) {
+      setSavedCode(saved);
+      setCodigo(saved);
+    }
+  }, []);
 
   const handleStart = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,6 +141,11 @@ export default function Home() {
                 required
                 maxLength={7}
               />
+              {savedCode && (
+                <div className="text-xs text-emerald-600 mt-1">
+                  Código recuperado de tu navegador automáticamente.
+                </div>
+              )}
             </div>
             <button 
               type="submit"

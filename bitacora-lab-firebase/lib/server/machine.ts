@@ -11,6 +11,8 @@ export function validateAnswer(session: SessionRecord, stepId: string, answer: s
     return { valid: false, error: 'Paso desincronizado' };
   }
   
+  if (stepId === 'intro') return { valid: true };
+
   const phaseDef = getPhaseDef(session.phaseIndex);
   if (!phaseDef) return { valid: false, error: 'Fase inválida' };
 
@@ -32,6 +34,16 @@ export function validateAnswer(session: SessionRecord, stepId: string, answer: s
 }
 
 export function closeStep(session: SessionRecord, data: { stepId: string; answer: string; meta: any }): ClosedStep {
+  if (data.stepId === 'intro') {
+    return {
+      stepId: data.stepId,
+      type: 'free',
+      at: new Date().toISOString(),
+      prompt: 'Instrucciones leídas',
+      answer: 'Sí'
+    };
+  }
+
   const phaseDef = getPhaseDef(session.phaseIndex)!;
   let type: ClosedStep['type'] = 'free';
   let prompt = '';
@@ -75,6 +87,26 @@ export function closeStep(session: SessionRecord, data: { stepId: string; answer
 }
 
 export async function advance(session: SessionRecord, closedStep: ClosedStep): Promise<void> {
+  if (closedStep.stepId === 'intro') {
+    const nextDef = getPhaseDef(session.phaseIndex)!;
+    if (session.entries.length === 0) {
+      session.entries.push({
+        phase: `phase_${session.phaseIndex}`,
+        title: nextDef.title,
+        startedAt: new Date().toISOString(),
+        steps: [],
+        ideas: {},
+        notes: []
+      });
+    }
+    if (nextDef.actions && nextDef.actions.length > 0) {
+      session.currentStepId = `phase_${session.phaseIndex}_actions`;
+    } else {
+      session.currentStepId = `phase_${session.phaseIndex}_v1Prompt`;
+    }
+    return;
+  }
+
   const phaseDef = getPhaseDef(session.phaseIndex);
   if (!phaseDef) return;
 
@@ -164,7 +196,11 @@ export async function advance(session: SessionRecord, closedStep: ClosedStep): P
         ideas: {},
         notes: []
       });
-      session.currentStepId = `phase_${session.phaseIndex}_actions`;
+      if (nextDef.actions && nextDef.actions.length > 0) {
+        session.currentStepId = `phase_${session.phaseIndex}_actions`;
+      } else {
+        session.currentStepId = `phase_${session.phaseIndex}_v1Prompt`;
+      }
     } else {
       session.currentStepId = 'done';
     }
@@ -183,6 +219,15 @@ function determineNextGuideOrPredict(session: SessionRecord) {
 
 export function toStepView(session: SessionRecord): StepView | null {
   if (session.currentStepId === 'done' || !session.currentStepId) return null;
+
+  if (session.currentStepId === 'intro') {
+    return {
+      id: 'intro',
+      phase: 'Bienvenida',
+      type: 'intro' as any,
+      prompt: 'Instrucciones del Laboratorio',
+    };
+  }
 
   const phaseDef = getPhaseDef(session.phaseIndex);
   if (!phaseDef) return null;

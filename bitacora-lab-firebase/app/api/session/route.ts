@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getSessionByCode, saveSession } from '@/lib/server/store';
 import { SessionRecord } from '@/lib/types';
+import { PHASES } from '@/lib/server/phases.private';
 import crypto from 'crypto';
 
 const startSchema = z.object({
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
         matricula: parsed.matricula,
         createdAt: new Date().toISOString(),
         phaseIndex: 0,
-        currentStepId: 'phase_0_actions',
+        currentStepId: 'intro',
         guideRound: 0,
         pendingIdeas: [],
         entries: [],

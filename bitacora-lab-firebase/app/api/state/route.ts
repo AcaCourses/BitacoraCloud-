@@ -43,6 +43,7 @@ export async function GET(req: Request) {
     phaseIndex: session.phaseIndex,
     currentStep,
     closedEntries,
-    isDone
+    isDone,
+    resumeCode: session.resumeCode
   });
 }
